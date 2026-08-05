@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CyberLog AI Dashboard</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<h1>🛡️ CyberLog AI SOC Dashboard</h1>
+
+
+<div class="cards">
+
+    <div class="card">
+        <h3>Total Incidents</h3>
+        <p>{{ total }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Critical Severity</h3>
+        <p>{{ critical }}</p>
+    </div>
+
+    <div class="card">
+        <h3>High Severity</h3>
+        <p>{{ high }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Medium Severity</h3>
+        <p>{{ medium }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Average Risk</h3>
+        <p>{{ avg_risk }}</p>
+    </div>
+
+</div>
+
+
+<h2>🚨 Security Incidents</h2>
+
+<table>
+
+<tr>
+    <th>Incident</th>
+    <th>Source IP</th>
+    <th>Severity</th>
+    <th>Risk Score</th>
+</tr>
+
+
+{% for incident in incidents %}
+
+<tr>
+    <td>{{ incident.incident }}</td>
+    <td>{{ incident.source_ip }}</td>
+    <td>{{ incident.severity }}</td>
+    <td>{{ incident.risk_score }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<h2>🕒 Attack Timeline</h2>
+
+<div class="timeline">
+
+{% for event in timeline %}
+
+<div class="timeline-item">
+
+    <h3>{{ event.incident }}</h3>
+
+    <p>
+        ⏱️ Time: {{ event.time }} <br>
+        🌐 Source IP: {{ event.source_ip }} <br>
+        ⚠️ Severity: {{ event.severity }}
+    </p>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<h2>🧩 Indicators of Compromise (IOC)</h2>
+
+<table>
+
+<tr>
+    <th>Source IP</th>
+    <th>URL</th>
+    <th>Attack Category</th>
+    <th>Log Type</th>
+</tr>
+
+
+{% for item in ioc_data %}
+
+<tr>
+
+    <td>{{ item.ioc.source_ip }}</td>
+
+    <td>{{ item.ioc.url }}</td>
+
+    <td>{{ item.ioc.attack_category }}</td>
+
+    <td>{{ item.ioc.log_type }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<h2>🎯 MITRE ATT&CK Mapping</h2>
+
+<div class="mitre-panel">
+
+{% for item in mitre_data %}
+
+<div class="mitre-item">
+
+    <h3>{{ item.incident }}</h3>
+
+    <p>
+        🆔 Technique ID:
+        {{ item.mitre.technique_id }}
+        <br>
+
+        ⚔️ Technique:
+        {{ item.mitre.technique }}
+        <br>
+
+        🎯 Tactic:
+        {{ item.mitre.tactic }}
+    </p>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+<h2>📊 Severity Distribution</h2>
+
+<canvas id="severityChart"></canvas>
+
+
+<script>
+
+const ctx = document.getElementById('severityChart');
+
+new Chart(ctx, {
+
+    type: 'pie',
+
+    data: {
+
+        labels: [
+            "CRITICAL",
+            "HIGH",
+            "MEDIUM",
+            "LOW"
+        ],
+
+        datasets: [{
+
+            data: [
+                {{ critical }},
+                {{ high }},
+                {{ medium }},
+                {{ low }}
+        ]
+
+        }]
+
+    }
+
+});
+
+</script>
+
+
+</body>
+</html>
