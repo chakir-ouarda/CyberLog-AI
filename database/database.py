@@ -36,6 +36,10 @@ def init_database():
 
         threat_intelligence TEXT,
 
+        status TEXT DEFAULT 'NEW',
+        assigned_to TEXT,
+        resolved_at TIMESTAMP
+
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)

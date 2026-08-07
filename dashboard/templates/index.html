@@ -131,6 +131,10 @@
     <th>Risk Score</th>
     <th>MITRE</th>
     <th>Confidence</th>
+    <th>Status</th>
+    <th>Assigned To</th>
+    <th>Action</th>
+
 </tr>
 
 <tbody id="incidentsTable">
@@ -189,6 +193,26 @@
 
 {% endif %}
 
+</td>
+
+<td>
+    <span class="status-badge">
+        {{ incident.status }}
+    </span>
+</td>
+
+<td>
+    {% if incident.assigned_to %}
+        {{ incident.assigned_to }}
+    {% else %}
+        -
+    {% endif %}
+</td>
+
+<td>
+    <button>
+        Investigate
+    </button>
 </td>
 
 </tr>
