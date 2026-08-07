@@ -1,4 +1,0 @@
-Jul 30 18:22:51 ubuntu sshd[12345]: Failed password for root from 192.168.1.10 port 53214 ssh2
-Jul 30 18:23:01 ubuntu sshd[12346]: Accepted password for admin from 192.168.1.20 port 53215 ssh2
-Jul 30 18:23:15 ubuntu sshd[12347]: Failed password for root from 192.168.1.10 port 53216 ssh2
-Jul 30 18:23:30 ubuntu sshd[12348]: Failed password for root from 192.168.1.10 port 53217 ssh2

@@ -1,5 +1,22 @@
+# Python cache
 _pycache_/
 *.pyc
 *.pyo
-*.log.save
+
+# Virtual environment
 .venv/
+
+# Temporary files
+*.log.save
+*.save
+
+# Generated logs
+logs/input/*.log
+
+# Generated reports
+reports/*.json
+reports/*.pdf
+reports/stix/*.json
+
+# Runtime database
+database/*.db
