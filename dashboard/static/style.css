@@ -1,81 +1,404 @@
-body {
-
-    font-family: Arial, sans-serif;
-    margin: 40px;
-
+* {
+    box-sizing: border-box;
 }
 
+body {
+    margin: 0;
+    padding: 20px;
+    background: #0b1220;
+    color: #e5e7eb;
+    font-family: Arial, Helvetica, sans-serif;
+}
 
 h1 {
-
     text-align: center;
+    color: #38bdf8;
+    margin-bottom: 30px;
+}
 
+h2 {
+    color: #7dd3fc;
+    border-left: 4px solid #38bdf8;
+    padding-left: 10px;
+    margin-top: 35px;
 }
 
 
+/* Dashboard Cards */
+
 .cards {
-
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 20px;
-    justify-content: center;
-
+    margin-bottom: 30px;
 }
 
 
 .card {
-
-    border: 1px solid #ccc;
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 12px;
     padding: 20px;
-    width: 180px;
     text-align: center;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+}
 
+
+.card h3 {
+    color: #94a3b8;
 }
 
 
 .card p {
-
-    font-size: 30px;
+    font-size: 32px;
     font-weight: bold;
-
+    color: #38bdf8;
 }
 
+
+/* Search */
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    background: #111827;
+    border: 1px solid #374151;
+    color: white;
+    border-radius: 8px;
+}
+
+
+/* Tables */
 
 table {
-
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-
+    background: #111827;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 
-th, td {
+th {
+    background: #1e293b;
+    color: #38bdf8;
+    padding: 12px;
+}
 
-    border: 1px solid #ccc;
-    padding: 10px;
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #1f2937;
     text-align: center;
-
 }
 
+
+tr:hover {
+    background: #172554;
+}
+
+
+/* Severity */
+
+.severity-critical {
+    background: #991b1b;
+    color: white;
+    font-weight: bold;
+    padding: 5px 12px;
+    border-radius: 8px;
+}
+
+
+.severity-high {
+    background: #dc2626;
+    color: white;
+    font-weight: bold;
+    padding: 5px 12px;
+    border-radius: 8px;
+}
+
+
+.severity-medium {
+    background: #f97316;
+    color: white;
+    font-weight: bold;
+    padding: 5px 12px;
+    border-radius: 8px;
+}
+
+
+.severity-low {
+    background: #16a34a;
+    color: white;
+    font-weight: bold;
+    padding: 5px 12px;
+    border-radius: 8px;
+}
+
+
+/* Timeline */
+
+.timeline-item,
+.mitre-item {
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+
+/* Chart */
 
 canvas {
-
-    max-width: 500px;
-    margin: 30px auto;
-
-}
-
-.timeline {
-
-    margin-top: 20px;
-
+    background: #111827;
+    padding: 15px;
+    border-radius: 12px;
 }
 
 
-.timeline-item {
+/* SOC Header */
 
-    border-left: 4px solid #333;
-    padding: 10px;
-    margin: 15px;
+.soc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #111827;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #1f2937;
+    margin-bottom: 20px;
+}
 
+
+.soc-header h1 {
+    margin: 0;
+    color: #38bdf8;
+}
+
+
+.soc-header p {
+    color: #94a3b8;
+    margin-top: 8px;
+}
+
+
+.status {
+    background: #065f46;
+    color: #6ee7b7;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+
+/* Navigation */
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    background: #111827;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+
+.navbar a {
+    color: #7dd3fc;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+.navbar a:hover {
+    color: white;
+}
+
+/* System Status */
+
+.system-status {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+
+.status-card {
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: #e5e7eb;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+
+.status-card span {
+    display: inline-block;
+    margin-top: 10px;
+    color: #34d399;
+    font-size: 18px;
+}
+
+/* MITRE Badge */
+
+.mitre-badge {
+    background: #1d4ed8;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+
+/* Confidence Badge */
+
+.confidence-badge {
+    background: #059669;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+
+.confidence-none {
+    color: #94a3b8;
+}
+
+/* Incident Table Enhancement */
+
+table {
+    table-layout: fixed;
+}
+
+
+th,
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+th:nth-child(1),
+td:nth-child(1) {
+    width: 22%;
+}
+
+
+th:nth-child(2),
+td:nth-child(2) {
+    width: 15%;
+}
+
+
+th:nth-child(3),
+td:nth-child(3) {
+    width: 18%;
+}
+
+
+th:nth-child(4),
+td:nth-child(4) {
+    width: 12%;
+}
+
+
+th:nth-child(5),
+td:nth-child(5) {
+    width: 10%;
+}
+
+
+th:nth-child(6),
+td:nth-child(6) {
+    width: 10%;
+}
+
+
+th:nth-child(7),
+td:nth-child(7) {
+    width: 13%;
+}
+
+/* Incident Details */
+
+.incident-details {
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-left: 4px solid #38bdf8;
+    border-radius: 10px;
+    padding: 18px;
+    margin: 20px 0;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+}
+
+.incident-details h3 {
+    margin-top: 0;
+    color: #38bdf8;
+}
+
+.incident-details p {
+    color: #e5e7eb;
+    line-height: 1.6;
+}
+
+.incident-details ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.incident-details li {
+    margin-bottom: 8px;
+    color: #cbd5e1;
+}
+
+/* Collapsible Incident Details */
+
+.incident-details summary {
+    cursor: pointer;
+    list-style: none;
+    font-size: 18px;
+    font-weight: bold;
+    color: #38bdf8;
+    padding: 12px;
+    border-radius: 8px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    transition: background 0.2s ease;
+}
+
+.incident-details summary:hover {
+    background: #1e293b;
+}
+
+.incident-details[open] summary {
+    margin-bottom: 15px;
+}
+
+.incident-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.incident-details summary::before {
+    content: "▶️ ";
+    color: #22c55e;
+    font-weight: bold;
+}
+
+.incident-details[open] summary::before {
+    content: "▼ ";
 }

@@ -1,32 +1,28 @@
-from flask import Flask, render_template
-import json
+import sys
 import os
 
+sys.path.append(os.path.abspath(".."))
+
+from flask import Flask, render_template, jsonify
+from services.database_service import get_incidents
+from src.reporting.timeline import AttackTimeline
+
 app = Flask(__name__)
-
-REPORT_PATH = "../reports/security_report.json"
-
-
-def load_report():
-    with open(REPORT_PATH, "r") as file:
-        return json.load(file)
 
 
 @app.route("/")
 def dashboard():
 
-    report = load_report()
-
-    incidents = report.get("data", [])
+    incidents = get_incidents()
 
     total = len(incidents)
 
+    critical = len(
+        [i for i in incidents if i["severity"] == "CRITICAL"]
+    )
+
     high = len(
         [i for i in incidents if i["severity"] == "HIGH"]
-    )
-    
-    critical = len(
-    [i for i in incidents if i["severity"] == "CRITICAL"]
     )
 
     medium = len(
@@ -37,16 +33,31 @@ def dashboard():
         [i for i in incidents if i["severity"] == "LOW"]
     )
 
-    avg_risk = int(
-        sum(i["risk_score"] for i in incidents) / total
+
+    avg_risk = 0
+
+    if total:
+        avg_risk = int(
+            sum(i["risk_score"] for i in incidents) / total
+        )
+
+
+    top_threats = sorted(
+        incidents,
+        key=lambda x: x["risk_score"],
+        reverse=True
     )
+
+    timeline = AttackTimeline().generate(incidents)
+
 
     return render_template(
         "index.html",
         incidents=incidents,
-        timeline=report["attack_timeline"],
-        mitre_data=incidents,
+        top_threats=top_threats,
+        timeline=timeline,
         ioc_data=incidents,
+        mitre_data=incidents,
         total=total,
         critical=critical,
         high=high,
@@ -56,5 +67,20 @@ def dashboard():
     )
 
 
+@app.route("/api/incidents")
+def api_incidents():
+
+    incidents = get_incidents()
+
+    return jsonify(
+        [dict(i) for i in incidents]
+    )
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+
+    app.run(
+        host="0.0.0.0",
+        port=5000,
+        debug=True
+    )

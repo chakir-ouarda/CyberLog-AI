@@ -10,63 +10,224 @@
 
 <body>
 
-<h1>🛡️ CyberLog AI SOC Dashboard</h1>
+<header class="soc-header">
+
+    <div>
+        <h1>🛡️ CyberLog AI</h1>
+        <p>SOC Automation & Threat Intelligence Platform</p>
+    </div>
+
+    <div class="status">
+        🟢 SOC ONLINE
+    </div>
+
+    <div id="liveAlert"
+         style="display:none;
+                margin:20px;
+                padding:15px;
+                background:#b91c1c;
+                color:white;
+                font-weight:bold;
+                border-radius:8px;
+                text-align:center;">
+        🚨 New Security Incident Detected!
+</div>
+
+</header>
+
+
+<nav class="navbar">
+
+    <a href="/">Dashboard</a>
+    <a href="#incidents">Incidents</a>
+    <a href="#threats">Threat Intel</a>
+    <a href="#reports">Reports</a>
+
+</nav>
+
+<section class="system-status">
+
+    <h2>⚙️ System Status</h2>
+
+    <div class="status-grid">
+
+        <div class="status-card">
+            🟢 Log Parser
+            <br>
+            <span>ONLINE</span>
+        </div>
+
+
+        <div class="status-card">
+            🟢 Threat Detection Engine
+            <br>
+            <span>ONLINE</span>
+        </div>
+
+
+        <div class="status-card">
+            🟢 AI Analyzer
+            <br>
+            <span>ONLINE</span>
+        </div>
+
+
+        <div class="status-card">
+            🟢 Report Generator
+            <br>
+            <span>ONLINE</span>
+        </div>
+
+    </div>
+
+</section>
 
 
 <div class="cards">
 
     <div class="card">
         <h3>Total Incidents</h3>
-        <p>{{ total }}</p>
+        <p id="totalIncidents">{{ total }}</p>
     </div>
 
     <div class="card">
-        <h3>Critical Severity</h3>
-        <p>{{ critical }}</p>
-    </div>
+    <h3>Critical Severity</h3>
+    <p id="criticalCount">{{ critical }}</p>
+</div>
 
-    <div class="card">
-        <h3>High Severity</h3>
-        <p>{{ high }}</p>
-    </div>
+<div class="card">
+    <h3>High Severity</h3>
+    <p id="highCount">{{ high }}</p>
+</div>
 
-    <div class="card">
-        <h3>Medium Severity</h3>
-        <p>{{ medium }}</p>
-    </div>
+<div class="card">
+    <h3>Medium Severity</h3>
+    <p id="mediumCount">{{ medium }}</p>
+</div>
 
-    <div class="card">
-        <h3>Average Risk</h3>
-        <p>{{ avg_risk }}</p>
-    </div>
+<div class="card">
+    <h3>Average Risk</h3>
+    <p id="avgRisk">{{ avg_risk }}</p>
+</div>
 
 </div>
 
-
 <h2>🚨 Security Incidents</h2>
+
+<input
+    type="text"
+    id="searchInput"
+    placeholder="Search by Incident, IP or Severity..."
+    onkeyup="searchTable()"
+>
 
 <table>
 
 <tr>
     <th>Incident</th>
     <th>Source IP</th>
+    <th>Category</th>
     <th>Severity</th>
     <th>Risk Score</th>
+    <th>MITRE</th>
+    <th>Confidence</th>
 </tr>
 
+<tbody id="incidentsTable">
 
 {% for incident in incidents %}
 
 <tr>
     <td>{{ incident.incident }}</td>
+
     <td>{{ incident.source_ip }}</td>
-    <td>{{ incident.severity }}</td>
+
+    <td>
+    {% if incident.ioc.attack_category %}
+        {{ incident.ioc.attack_category }}
+    {% else %}
+        -
+    {% endif %}
+    </td>
+
+    <td>
+    {% if incident.severity == "CRITICAL" %}
+        <span class="severity-critical">{{ incident.severity }}</span>
+
+    {% elif incident.severity == "HIGH" %}
+        <span class="severity-high">{{ incident.severity }}</span>
+
+    {% elif incident.severity == "MEDIUM" %}
+        <span class="severity-medium">{{ incident.severity }}</span>
+
+    {% else %}
+        <span class="severity-low">{{ incident.severity }}</span>
+    {% endif %}
+    </td>
+
     <td>{{ incident.risk_score }}</td>
+
+    <td>
+    <span class="mitre-badge">
+        {{ incident.mitre.technique_id }}
+    </span>
+</td>
+
+    <td>
+
+{% if incident.threat_intelligence.confidence %}
+
+    <span class="confidence-badge">
+        {{ incident.threat_intelligence.confidence }}
+    </span>
+
+{% else %}
+
+    <span class="confidence-none">
+        -
+    </span>
+
+{% endif %}
+
+</td>
+
 </tr>
 
 {% endfor %}
 
+</tbody>
+
 </table>
+
+<h2>🔍 Incident Details</h2>
+
+{% for incident in incidents %}
+
+<details class="incident-details">
+
+<summary>{{ incident.incident }}</summary>
+
+    <h3>{{ incident.incident }}</h3>
+
+    <p><strong>Analysis:</strong></p>
+
+    <p>{{ incident.analysis }}</p>
+
+    <p><strong>Recommendations:</strong></p>
+
+    <ul>
+
+    {% for recommendation in incident.recommendations %}
+
+        <li>{{ recommendation }}</li>
+
+    {% endfor %}
+
+    </ul>
+
+</details>
+
+{% endfor %}
 
 <h2>🕒 Attack Timeline</h2>
 
@@ -149,10 +310,80 @@
 
 </div>
 
+<h2>🔥 Top Threats</h2>
+
+<table>
+
+<tr>
+    <th>Threat</th>
+    <th>Risk Score</th>
+    <th>Severity</th>
+</tr>
+
+{% for threat in top_threats[:5] %}
+
+<tr>
+    <td>{{ threat.incident }}</td>
+    <td>{{ threat.risk_score }}</td>
+    <td>{{ threat.severity }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<h2>🌍 Threat Intelligence</h2>
+
+<table>
+
+<tr>
+    <th>Incident</th>
+    <th>Reputation</th>
+    <th>Confidence</th>
+    <th>Source</th>
+</tr>
+
+{% for incident in incidents %}
+
+<tr>
+
+    <td>{{ incident.incident }}</td>
+
+    <td>
+    {% if incident.threat_intelligence.malicious %}
+        🔴 Malicious
+    {% else %}
+        🟢 Clean
+    {% endif %}
+    </td>
+
+    <td>
+    {% if incident.threat_intelligence.confidence %}
+        {{ incident.threat_intelligence.confidence }}
+    {% else %}
+        -
+    {% endif %}
+    </td>
+
+    <td>
+    {% if incident.threat_intelligence.source %}
+        {{ incident.threat_intelligence.source }}
+    {% else %}
+        Local Analysis
+    {% endif %}
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</table>
 
 <h2>📊 Severity Distribution</h2>
 
-<canvas id="severityChart"></canvas>
+<div style="width:350px; height:350px; margin:auto;">
+    <canvas id="severityChart"></canvas>
+</div>
 
 
 <script>
@@ -173,22 +404,55 @@ new Chart(ctx, {
         ],
 
         datasets: [{
-
             data: [
                 {{ critical }},
                 {{ high }},
                 {{ medium }},
                 {{ low }}
-        ]
-
+            ],
+            backgroundColor: [
+                "#2563eb",
+                "#dc2626",
+                "#f59e0b",
+                "#16a34a"
+            ],
+            borderColor: "#ffffff",
+            borderWidth: 2
         }]
 
+    },
+
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
     }
 
 });
 
+function searchTable() {
+
+    let input = document.getElementById("searchInput");
+    let filter = input.value.toUpperCase();
+
+    let table = document.querySelector("table");
+    let tr = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+
+        let rowText = tr[i].textContent || tr[i].innerText;
+
+        if (rowText.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+
 </script>
 
+
+<script src="/static/dashboard.js"></script>
 
 </body>
 </html>
