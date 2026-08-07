@@ -20,3 +20,5 @@ reports/stix/*.json
 
 # Runtime database
 database/*.db
+
+database/*.db
