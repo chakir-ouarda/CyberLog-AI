@@ -2,7 +2,8 @@ import json
 import sys
 import os
 
-sys.path.append(os.path.abspath(".."))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
 
 from src.parser.parser import LogParser
 from src.detection.engine import DetectionEngine
@@ -11,8 +12,10 @@ from src.reporting.report_generator import ReportGenerator
 from src.reporting.timeline import AttackTimeline
 from database.database import get_connection
 
-SSH_LOG = "../logs/input/auth.log"
-APACHE_LOG = "../logs/input/apache.log"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+SSH_LOG = os.path.join(BASE_DIR, "logs/input/auth.log")
+APACHE_LOG = os.path.join(BASE_DIR, "logs/input/apache.log")
 
 def save_incidents(reports):
 
