@@ -1,232 +1,337 @@
 # CyberLog AI
 
-## Intelligent Security Log Analyzer
+Intelligent Security Log Analyzer
 
 CyberLog AI is a Blue Team, SOC automation, and threat intelligence platform designed to analyze security logs, detect suspicious activity, assess incident risk, extract Indicators of Compromise (IOCs), map attacks to MITRE ATT&CK, enrich incidents with threat intelligence, and generate security reports through an interactive SOC dashboard.
 
-The project provides a practical Security Operations Center (SOC) environment for security monitoring, incident analysis, investigation, and automated reporting.
+The project provides a practical Security Operations Center environment for security monitoring, incident analysis, investigation, threat detection, and automated reporting.
+
+---
 
 ## Project Goal
 
 CyberLog AI transforms raw security logs into structured and actionable security incidents.
 
 Security Logs
-     |
-     v
+      |
+      v
 Log Parser
-     |
-     v
+      |
+      v
 Threat Detection Engine
-     |
-     v
+      |
+      v
 Risk Engine / AI Analyzer
-     |
-     +-- IOC Extraction
-     +-- MITRE ATT&CK Mapping
-     +-- Threat Intelligence
-     |
-     v
+      |
+      +---- IOC Extraction
+      |
+      +---- MITRE ATT&CK Mapping
+      |
+      +---- Threat Intelligence
+      |
+      v
 Security Reports
-     |
-     v
+      |
+      v
 SOC Dashboard
+
+---
 
 ## Features
 
 ### Security Log Analysis
 
-- Parse authentication and web server logs
-- Extract structured security events
-- Support SSH and web attack detection
-- Convert raw log entries into normalized security events
+CyberLog AI parses security-related log files and converts raw log entries into structured events.
+
+Supported log sources include:
+
+- SSH authentication logs
+- Web server logs
+- System logs
+
+The parser extracts information such as:
+
+- Timestamp
+- Hostname
+- Process
+- Process ID
+- Username
+- Source IP
+- Port
+- Protocol
+- Event type
+- Log type
+
+---
 
 ### Threat Detection
 
-The detection engine currently identifies attacks such as:
+The detection engine identifies suspicious activity using security detection rules.
+
+Current detection capabilities include:
 
 - SSH Brute Force
 - Failed Web Login
 - Admin Page Access Attempt
-- SQL Injection
+- SQL Injection Attempt
 - XSS
 - Path Traversal
-- Other suspicious web activity
+
+Detected events are converted into structured security incidents.
+
+---
 
 ### Risk Analysis
 
-Each detected incident receives a risk score and severity classification.
+CyberLog AI evaluates detected incidents using risk scoring and severity classification.
 
-Threat| Severity| Risk Score
-SQL Injection Attempt| CRITICAL| 95
-SSH Brute Force| HIGH| 85
-Admin Page Access Attempt| MEDIUM| 55
-Failed Web Login| MEDIUM| 40
+Supported severity levels:
 
-## MITRE ATT&CK Mapping
+- LOW
+- MEDIUM
+- HIGH
+- CRITICAL
 
-CyberLog AI maps detected incidents to MITRE ATT&CK techniques.
+Each incident can contain:
 
-Incident| Technique| ID| Tactic
-SQL Injection Attempt| Exploit Public-Facing Application| T1190| Initial Access
-SSH Brute Force| Brute Force| T1110| Credential Access
-Admin Page Access Attempt| File and Directory Discovery| T1083| Discovery
+- Threat name
+- Severity
+- Risk score
+- Source IP
+- Attack category
+- Detection information
+- Security analysis
+- Recommended actions
 
-## IOC Extraction
+---
+
+### IOC Extraction
 
 The platform extracts Indicators of Compromise from detected incidents.
 
-Currently supported IOC information includes:
+Supported IOC information includes:
 
-- Source IP
-- URL
-- Username
-- HTTP Method
-- HTTP Status Code
-- Attack Category
-- Log Type
+- Source IP addresses
+- URLs
+- Attack categories
+- Log types
+- HTTP information
+- Usernames when available
 
-Example:
+IOC information can be exported as CSV for further analysis.
 
-Source IP:       192.168.1.50
-URL:             /login.php?id=1%20UNION%20SELECT%20password%20FROM%20users
-Attack Category: SQL_INJECTION
-Log Type:        WEB_ATTACK
+---
 
-## Threat Intelligence
+### MITRE ATT&CK Mapping
 
-CyberLog AI includes a local Threat Intelligence layer that enriches detected incidents with:
+Detected incidents can be mapped to MITRE ATT&CK techniques and tactics.
 
-- Malicious or Clean reputation
-- Confidence level
-- Threat intelligence source
-- Incident context
+Examples include:
+
+- T1110 — Brute Force
+- T1190 — Exploit Public-Facing Application
+- T1083 — File and Directory Discovery
+
+MITRE information is displayed directly within the SOC dashboard.
+
+---
+
+### Threat Intelligence
+
+CyberLog AI provides local threat intelligence enrichment for detected incidents.
+
+Threat intelligence information can include:
+
+- Reputation
+- Confidence
+- Intelligence source
+- Malicious or clean classification
+
+The current implementation uses a local threat intelligence database and analysis logic.
+
+---
 
 ## SOC Dashboard
 
-The project includes a Flask-based SOC dashboard providing a centralized view of security activity.
+CyberLog AI includes a Flask-based SOC dashboard designed to provide centralized visibility into security incidents.
 
-Dashboard capabilities include:
+The dashboard provides:
 
 - SOC system status
-- Total incidents
-- Critical, High, Medium, and Low severity
-- Average risk score
-- Mean Time To Resolution
-- Incident management
-- Incident investigation
-- Analyst assignment
-- Investigation notes
-- Incident status management
-- Audit logs
-- Attack timeline
-- IOC overview
-- MITRE ATT&CK mapping
-- Threat Intelligence
+- Incident overview
 - Severity distribution
+- Risk statistics
 - Incident trends
 - Attack statistics
+- Incident investigation
+- IOC visualization
+- MITRE ATT&CK information
+- Threat intelligence
+- Audit logs
+- Mean Time To Resolution (MTTR)
 - Recent SOC activity
 
 ### Current Dashboard Status
 
-SOC ONLINE
+The dashboard monitors the status of the main CyberLog AI components:
 
-Log Parser                ONLINE
-Threat Detection Engine  ONLINE
-AI Analyzer              ONLINE
-Report Generator         ONLINE
+- Log Parser
+- Threat Detection Engine
+- AI Analyzer
+- Report Generator
 
-Current test environment:
+The dashboard also displays:
 
-Total Incidents:       5
-Critical Severity:     2
-High Severity:         1
-Medium Severity:       2
-Average Risk:          75
-MTTR:                  672.6 min
+- Total incidents
+- Critical incidents
+- High severity incidents
+- Medium severity incidents
+- Average risk score
+- Mean Time To Resolution
+
+---
 
 ## Incident Management
 
-Each incident can be investigated through a dedicated incident page.
+CyberLog AI provides an incident investigation workflow for SOC analysis.
 
-The analyst can manage:
+Analysts can:
 
-- Incident status
-- Assigned analyst
-- Investigation notes
-- Resolution timestamp
-- Investigation history
+- View incident details
+- Assign incidents
+- Change incident status
+- Add investigation notes
+- Mark incidents as resolved
+- Review investigation history
 
-Supported statuses:
+Supported incident states:
 
 NEW
 INVESTIGATING
 RESOLVED
 
-Changes to incident status are recorded through the SOC audit log.
+Status changes are recorded in the audit log.
+
+---
+
+## Audit Logs
+
+The platform records incident status changes and investigation activity.
+
+Audit information includes:
+
+- Timestamp
+- Analyst
+- Action
+- Previous status
+- New status
+- Investigation details
+
+This provides a basic audit trail for SOC investigation workflows.
+
+---
+
+## Mean Time To Resolution
+
+CyberLog AI calculates Mean Time To Resolution (MTTR) for resolved incidents.
+
+The calculation uses:
+
+Incident Creation Time
+        |
+        v
+Incident Resolution Time
+        |
+        v
+Resolution Duration
+        |
+        v
+Average MTTR
+
+MTTR is displayed directly in the SOC dashboard.
+
+---
+
+## Attack Statistics
+
+The dashboard provides attack statistics based on detected incident categories.
+
+This allows analysts to identify the most frequently detected attack types and understand the distribution of security events.
+
+---
+
+## Incident Trends
+
+CyberLog AI provides incident trend visualization based on incident creation dates.
+
+This helps analysts understand:
+
+- Incident frequency
+- Detection activity
+- Changes in attack volume
+- Security event distribution over time
+
+---
 
 ## Security Reports
 
-CyberLog AI automatically generates multiple security report formats:
+CyberLog AI generates multiple security report formats.
 
-JSON
-HTML
-PDF
-CSV
-Sigma
-YARA
-STIX
+Supported outputs include:
 
-Examples:
+- JSON
+- HTML
+- PDF
+- CSV IOC reports
+- Sigma rules
+- YARA rules
+- STIX exports
+
+Generated reports are stored in the "reports/" directory.
+
+Example outputs:
 
 reports/security_report.json
 reports/security_report.html
 reports/security_report.pdf
 reports/iocs.csv
-
 reports/sigma/ssh_brute_force.yml
 reports/yara/ssh_brute_force.yar
 reports/stix/ssh_brute_force_stix.json
 
+---
+
 ## Testing
 
-The project includes manual smoke tests for the main components.
+The project has been validated through manual component smoke tests and pipeline execution.
 
-python3 test_parser.py
-python3 test_detection.py
-python3 test_ai.py
-python3 test_report.py
-python3 test_pdf_report.py
-python3 test_web_detection.py
+Tested components include:
 
-The complete security analysis pipeline can be executed with:
-
-python3 main.py
-
-Example output:
-
-[+] Loading logs...
-[+] Parsed logs: 13
-[+] Detecting threats...
-[+] Threats detected: 4
-[+] AI analyzing incidents...
-[+] Generating report...
-
-CyberLog AI completed successfully
+- Log parser
+- Threat detection engine
+- AI analyzer
+- Web attack detection
+- Security report generation
+- PDF report generation
+- Main processing pipeline
+- Python compilation
 
 The project also passes Python compilation checks:
 
 python3 -m compileall -q dashboard src main.py realtime
 
+The current test scripts are primarily manual smoke-test scripts rather than a pytest-based automated test suite.
+
+---
+
 ## Project Structure
 
 CyberLog-AI/
-|
 ├── main.py
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-|
+│
 ├── dashboard/
 │   ├── app.py
 │   ├── services/
@@ -238,21 +343,21 @@ CyberLog-AI/
 │   └── templates/
 │       ├── index.html
 │       └── incident.html
-|
+│
 ├── database/
 │   └── database.py
-|
+│
 ├── logs/
 │   └── input/
 │       ├── apache.log
 │       ├── auth.log
 │       └── syslog
-|
+│
 ├── realtime/
 │   ├── pipeline.py
 │   ├── watcher.py
 │   └── ...
-|
+│
 ├── reports/
 │   ├── iocs.csv
 │   ├── security_report.html
@@ -260,7 +365,7 @@ CyberLog-AI/
 │   ├── sigma/
 │   ├── yara/
 │   └── stix/
-|
+│
 ├── src/
 │   ├── ai/
 │   ├── detection/
@@ -271,7 +376,7 @@ CyberLog-AI/
 │   ├── reporting/
 │   ├── threat_intel/
 │   └── utils/
-|
+│
 └── tests/
 
 ## Technology Stack
@@ -283,12 +388,13 @@ SQLite| Incident and audit-log storage
 JavaScript| Dashboard interactivity
 Chart.js| Security analytics and charts
 ReportLab| PDF report generation
-MITRE ATT&CK| Attack technique mapping
+MITRE ATT&CK| Attack technique and tactic mapping
 Sigma| Detection rule generation
-YARA| Detection rule generation
-STIX| Threat intelligence export
+YARA| Security rule generation
+STIX| Threat intelligence data export
 Git| Version control
-Kali Linux| Development and security environment
+
+---
 
 ## Installation
 
@@ -297,17 +403,19 @@ Clone the repository:
 git clone https://github.com/chakir-ouarda/CyberLog-AI.git
 cd CyberLog-AI
 
-Create a virtual environment:
+Create a Python virtual environment:
 
 python3 -m venv .venv
 
-Activate it:
+Activate the virtual environment:
 
 source .venv/bin/activate
 
-Install dependencies:
+Install the required dependencies:
 
 pip install -r requirements.txt
+
+---
 
 ## Usage
 
@@ -315,31 +423,70 @@ Run the main security analysis pipeline:
 
 python3 main.py
 
-Start the SOC Dashboard:
+The pipeline performs:
+
+Load Logs
+   |
+   v
+Parse Logs
+   |
+   v
+Detect Threats
+   |
+   v
+Analyze Incidents
+   |
+   v
+Generate Reports
+
+Start the SOC dashboard:
 
 python3 dashboard/app.py
 
-Then open:
+The dashboard is available locally at:
 
 http://127.0.0.1:5000
 
+---
+
+## Example Detection Results
+
+Example incidents detected by CyberLog AI include:
+
+Incident| Severity| Risk Score
+SQL Injection Attempt| CRITICAL| 95
+SSH Brute Force| HIGH| 85
+Admin Page Access Attempt| MEDIUM| 55
+Failed Web Login| MEDIUM| 40
+
+These examples are intended for demonstration and security testing purposes.
+
+---
+
 ## Security Scope
 
-CyberLog AI is designed for:
+CyberLog AI is designed for defensive cybersecurity and security research purposes.
 
-- Defensive security monitoring
+The project is intended for:
+
 - SOC training
 - Blue Team laboratories
+- Security monitoring
 - Security log analysis
 - Incident investigation
 - Threat detection research
 - Security automation
+- Cybersecurity education
 
 The included logs and indicators are intended for testing and demonstration purposes.
 
+---
+
 ## Roadmap
 
-### v1.0 - Core Security Pipeline
+### v1.0 — Core Security Pipeline
+
+Completed:
 
 - Log parsing
 - Threat detection
@@ -348,7 +495,9 @@ The included logs and indicators are intended for testing and demonstration purp
 - IOC extraction
 - Security reports
 
-### v2.0 - SOC Platform
+### v2.0 — SOC Platform
+
+Completed:
 
 - SOC Dashboard
 - Incident Management
@@ -363,7 +512,7 @@ The included logs and indicators are intended for testing and demonstration purp
 - IOC visualization
 - MITRE ATT&CK visualization
 
-### v3.0 - Advanced AI Security
+### v3.0 — Advanced AI Security
 
 Planned future enhancements:
 
@@ -375,32 +524,46 @@ Planned future enhancements:
 - Context-aware threat intelligence
 - AI-assisted SOC recommendations
 
+---
+
 ## Project Status
 
 CyberLog AI v2.0 is completed and operational.
 
-The current version has been tested through:
+The current version has been validated through:
 
 - Manual component smoke tests
 - Main pipeline execution
-- Report generation
+- Security report generation
+- PDF report generation
 - Dashboard verification
 - Python compilation checks
 - Git version control
 
+The project is currently available on GitHub.
+
+---
+
 ## Author
 
 Chakir Ouarda
-
 Cybersecurity Graduate
-
 Interested in SOC Analysis, Blue Team, Security Automation and Threat Intelligence.
+
+---
 
 ## Connect
 
-- LinkedIn: https://www.linkedin.com/in/chakir-ouarda
-- GitHub: https://github.com/chakir-ouarda
-- Project: https://github.com/chakir-ouarda/CyberLog-AI
+LinkedIn:
+https://www.linkedin.com/in/chakir-ouarda
+
+GitHub:
+https://github.com/chakir-ouarda
+
+Project Repository:
+https://github.com/chakir-ouarda/CyberLog-AI
+
+---
 
 ## License
 
