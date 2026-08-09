@@ -6,12 +6,11 @@ CyberLog AI is a Blue Team, SOC automation, and threat intelligence platform des
 
 The project provides a practical Security Operations Center environment for security monitoring, incident analysis, investigation, threat detection, and automated reporting.
 
----
-
 ## Project Goal
 
 CyberLog AI transforms raw security logs into structured and actionable security incidents.
 
+text
 Security Logs
       |
       v
@@ -35,7 +34,6 @@ Security Reports
       v
 SOC Dashboard
 
----
 
 ## Features
 
@@ -62,8 +60,6 @@ The parser extracts information such as:
 - Event type
 - Log type
 
----
-
 ### Threat Detection
 
 The detection engine identifies suspicious activity using security detection rules.
@@ -78,8 +74,6 @@ Current detection capabilities include:
 - Path Traversal
 
 Detected events are converted into structured security incidents.
-
----
 
 ### Risk Analysis
 
@@ -103,8 +97,6 @@ Each incident can contain:
 - Security analysis
 - Recommended actions
 
----
-
 ### IOC Extraction
 
 The platform extracts Indicators of Compromise from detected incidents.
@@ -120,8 +112,6 @@ Supported IOC information includes:
 
 IOC information can be exported as CSV for further analysis.
 
----
-
 ### MITRE ATT&CK Mapping
 
 Detected incidents can be mapped to MITRE ATT&CK techniques and tactics.
@@ -133,8 +123,6 @@ Examples include:
 - T1083 — File and Directory Discovery
 
 MITRE information is displayed directly within the SOC dashboard.
-
----
 
 ### Threat Intelligence
 
@@ -148,8 +136,6 @@ Threat intelligence information can include:
 - Malicious or clean classification
 
 The current implementation uses a local threat intelligence database and analysis logic.
-
----
 
 ## SOC Dashboard
 
@@ -189,8 +175,6 @@ The dashboard also displays:
 - Average risk score
 - Mean Time To Resolution
 
----
-
 ## Incident Management
 
 CyberLog AI provides an incident investigation workflow for SOC analysis.
@@ -206,13 +190,11 @@ Analysts can:
 
 Supported incident states:
 
-NEW
-INVESTIGATING
-RESOLVED
+- NEW
+- INVESTIGATING
+- RESOLVED
 
 Status changes are recorded in the audit log.
-
----
 
 ## Audit Logs
 
@@ -229,14 +211,13 @@ Audit information includes:
 
 This provides a basic audit trail for SOC investigation workflows.
 
----
-
 ## Mean Time To Resolution
 
 CyberLog AI calculates Mean Time To Resolution (MTTR) for resolved incidents.
 
-The calculation uses:
+The calculation follows this workflow:
 
+text
 Incident Creation Time
         |
         v
@@ -248,17 +229,14 @@ Resolution Duration
         v
 Average MTTR
 
-MTTR is displayed directly in the SOC dashboard.
 
----
+MTTR is displayed directly in the SOC dashboard.
 
 ## Attack Statistics
 
 The dashboard provides attack statistics based on detected incident categories.
 
 This allows analysts to identify the most frequently detected attack types and understand the distribution of security events.
-
----
 
 ## Incident Trends
 
@@ -270,8 +248,6 @@ This helps analysts understand:
 - Detection activity
 - Changes in attack volume
 - Security event distribution over time
-
----
 
 ## Security Reports
 
@@ -287,10 +263,11 @@ Supported outputs include:
 - YARA rules
 - STIX exports
 
-Generated reports are stored in the "reports/" directory.
+Generated reports are stored in the reports/ directory.
 
 Example outputs:
 
+text
 reports/security_report.json
 reports/security_report.html
 reports/security_report.pdf
@@ -299,7 +276,6 @@ reports/sigma/ssh_brute_force.yml
 reports/yara/ssh_brute_force.yar
 reports/stix/ssh_brute_force_stix.json
 
----
 
 ## Testing
 
@@ -318,14 +294,15 @@ Tested components include:
 
 The project also passes Python compilation checks:
 
+bash
 python3 -m compileall -q dashboard src main.py realtime
+
 
 The current test scripts are primarily manual smoke-test scripts rather than a pytest-based automated test suite.
 
----
-
 ## Project Structure
 
+```text
 CyberLog-AI/
 ├── main.py
 ├── README.md
@@ -378,53 +355,62 @@ CyberLog-AI/
 │   └── utils/
 │
 └── tests/
+```
 
 ## Technology Stack
 
-Technology| Purpose
-Python| Core application and security analysis
-Flask| SOC Dashboard and API
-SQLite| Incident and audit-log storage
-JavaScript| Dashboard interactivity
-Chart.js| Security analytics and charts
-ReportLab| PDF report generation
-MITRE ATT&CK| Attack technique and tactic mapping
-Sigma| Detection rule generation
-YARA| Security rule generation
-STIX| Threat intelligence data export
-Git| Version control
-
----
+| Technology | Purpose |
+|---|---|
+| Python | Core application and security analysis |
+| Flask | SOC Dashboard and API |
+| SQLite | Incident and audit-log storage |
+| JavaScript | Dashboard interactivity |
+| Chart.js | Security analytics and charts |
+| ReportLab | PDF report generation |
+| MITRE ATT&CK | Attack technique and tactic mapping |
+| Sigma | Detection rule generation |
+| YARA | Security rule generation |
+| STIX | Threat intelligence data export |
+| Git | Version control |
 
 ## Installation
 
 Clone the repository:
 
+bash
 git clone https://github.com/chakir-ouarda/CyberLog-AI.git
 cd CyberLog-AI
 
+
 Create a Python virtual environment:
 
+bash
 python3 -m venv .venv
+
 
 Activate the virtual environment:
 
+bash
 source .venv/bin/activate
+
 
 Install the required dependencies:
 
+bash
 pip install -r requirements.txt
 
----
 
 ## Usage
 
 Run the main security analysis pipeline:
 
+bash
 python3 main.py
+
 
 The pipeline performs:
 
+text
 Load Logs
    |
    v
@@ -439,29 +425,31 @@ Analyze Incidents
    v
 Generate Reports
 
+
 Start the SOC dashboard:
 
+bash
 python3 dashboard/app.py
+
 
 The dashboard is available locally at:
 
+text
 http://127.0.0.1:5000
 
----
 
 ## Example Detection Results
 
 Example incidents detected by CyberLog AI include:
 
-Incident| Severity| Risk Score
-SQL Injection Attempt| CRITICAL| 95
-SSH Brute Force| HIGH| 85
-Admin Page Access Attempt| MEDIUM| 55
-Failed Web Login| MEDIUM| 40
+| Incident | Severity | Risk Score |
+|---|---|---:|
+| SQL Injection Attempt | CRITICAL | 95 |
+| SSH Brute Force | HIGH | 85 |
+| Admin Page Access Attempt | MEDIUM | 55 |
+| Failed Web Login | MEDIUM | 40 |
 
 These examples are intended for demonstration and security testing purposes.
-
----
 
 ## Security Scope
 
@@ -479,8 +467,6 @@ The project is intended for:
 - Cybersecurity education
 
 The included logs and indicators are intended for testing and demonstration purposes.
-
----
 
 ## Roadmap
 
@@ -524,8 +510,6 @@ Planned future enhancements:
 - Context-aware threat intelligence
 - AI-assisted SOC recommendations
 
----
-
 ## Project Status
 
 CyberLog AI v2.0 is completed and operational.
@@ -542,28 +526,18 @@ The current version has been validated through:
 
 The project is currently available on GitHub.
 
----
-
 ## Author
 
 Chakir Ouarda
+
 Cybersecurity Graduate
 Interested in SOC Analysis, Blue Team, Security Automation and Threat Intelligence.
 
----
-
 ## Connect
 
-LinkedIn:
-https://www.linkedin.com/in/chakir-ouarda
+LinkedIn: https://www.linkedin.com/in/chakir-ouarda
 
-GitHub:
-https://github.com/chakir-ouarda
-
-Project Repository:
-https://github.com/chakir-ouarda/CyberLog-AI
-
----
+GitHub: https://github.com/chakir-ouarda
 
 ## License
 
