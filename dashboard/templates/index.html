@@ -110,6 +110,11 @@
     <p id="avgRisk">{{ avg_risk }}</p>
 </div>
 
+<div class="card">
+    <h3>Mean Time To Resolution</h3>
+    <p>{{ mttr }} min</p>
+</div>
+
 </div>
 
 <h2>🚨 Security Incidents</h2>
@@ -210,9 +215,11 @@
 </td>
 
 <td>
-    <button>
-        Investigate
-    </button>
+    <a href="/incident/{{ incident.id }}">
+        <button>
+            Investigate
+        </button>
+    </a>
 </td>
 
 </tr>
@@ -405,76 +412,629 @@
 
 <h2>📊 Severity Distribution</h2>
 
-<div style="width:350px; height:350px; margin:auto;">
+<div style="width:100%; max-width:600px; height:430px; margin:20px auto;">
     <canvas id="severityChart"></canvas>
 </div>
 
+<h2>📈 Incident Trends</h2>
+
+<div style="width:95%; max-width:1100px; height:430px; margin:20px auto;">
+    <canvas id="incidentTrendsChart"></canvas>
+</div>
+
+<h2>🎯 Attack Statistics</h2>
+
+<div style="width:95%; max-width:1100px; height:430px; margin:20px auto;">
+    <canvas id="attackStatisticsChart"></canvas>
+</div>
+
+<h2>📋 Recent SOC Activity</h2>
+
+<table>
+
+<tr>
+    <th>Time</th>
+    <th>User</th>
+    <th>Action</th>
+    <th>Incident</th>
+    <th>Status Change</th>
+</tr>
+
+{% for log in audit_logs %}
+
+<tr>
+
+    <td>
+        {{ log.created_at }}
+    </td>
+
+    <td>
+        {{ log.username }}
+    </td>
+
+    <td>
+        {{ log.action }}
+    </td>
+
+    <td>
+        #{{ log.incident_id }}
+    </td>
+
+    <td>
+        {{ log.old_status }} → {{ log.new_status }}
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</table>
 
 <script>
 
-const ctx = document.getElementById('severityChart');
+/*
+ * ============================================================
+ * CYBERLOG AI - SECURITY VISUALIZATION
+ * Improved readability for SOC dashboard charts
+ * ============================================================
+ */
 
-new Chart(ctx, {
 
-    type: 'pie',
+/*
+ * ============================================================
+ * 1. SEVERITY DISTRIBUTION
+ * ============================================================
+ */
+
+const severityCtx =
+    document.getElementById("severityChart");
+
+new Chart(severityCtx, {
+
+    type: "pie",
 
     data: {
 
         labels: [
-            "CRITICAL",
-            "HIGH",
-            "MEDIUM",
-            "LOW"
+            "CRITICAL ({{ critical }})",
+            "HIGH ({{ high }})",
+            "MEDIUM ({{ medium }})",
+            "LOW ({{ low }})"
         ],
 
         datasets: [{
+
             data: [
                 {{ critical }},
                 {{ high }},
                 {{ medium }},
                 {{ low }}
             ],
+
             backgroundColor: [
-                "#2563eb",
                 "#dc2626",
+                "#f97316",
                 "#f59e0b",
                 "#16a34a"
             ],
-            borderColor: "#ffffff",
-            borderWidth: 2
+
+            borderColor: "#111827",
+
+            borderWidth: 3,
+
+            hoverOffset: 10
+
         }]
 
     },
 
     options: {
+
         responsive: true,
-        maintainAspectRatio: false
+
+        maintainAspectRatio: false,
+
+        layout: {
+            padding: 20
+        },
+
+        plugins: {
+
+            legend: {
+
+                position: "bottom",
+
+                labels: {
+
+                    color: "#ffffff",
+
+                    padding: 18,
+
+                    boxWidth: 18,
+
+                    boxHeight: 18,
+
+                    font: {
+                        size: 18,
+                        weight: "bold"
+                    }
+
+                }
+
+            },
+
+            tooltip: {
+
+                titleFont: {
+                    size: 15,
+                    weight: "bold"
+                },
+
+                bodyFont: {
+                    size: 14
+                },
+
+                padding: 12,
+
+                callbacks: {
+
+                    label: function(context) {
+
+                        const value = context.raw;
+
+                        const total =
+                            context.dataset.data.reduce(
+                                (sum, item) => sum + item,
+                                0
+                            );
+
+                        const percentage =
+                            total > 0
+                                ? ((value / total) * 100).toFixed(1)
+                                : 0;
+
+                        return `${context.label}: ${value} incident(s) — ${percentage}%`;
+
+                    }
+
+                }
+
+            }
+
+        }
+
     }
 
 });
 
+
+/*
+ * ============================================================
+ * 2. INCIDENT TRENDS
+ * ============================================================
+ */
+
+fetch("/api/incident-trends")
+
+    .then(response => response.json())
+
+    .then(result => {
+
+        const trendsCtx =
+            document.getElementById("incidentTrendsChart");
+
+        new Chart(trendsCtx, {
+
+            type: "line",
+
+            data: {
+
+                labels: result.labels,
+
+                datasets: [{
+
+                    label: "Security Incidents",
+
+                    data: result.data,
+
+                    borderWidth: 4,
+
+                    tension: 0.3,
+
+                    fill: false,
+
+                    pointRadius: 6,
+
+                    pointHoverRadius: 9,
+
+                    pointBorderWidth: 2
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                interaction: {
+                    intersect: false,
+                    mode: "index"
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        position: "top",
+
+                        labels: {
+
+                            color: "#ffffff",
+
+                            padding: 20,
+
+                            font: {
+                                size: 18,
+                                weight: "bold"
+                            }
+
+                        }
+
+                    },
+
+                    tooltip: {
+
+                        titleFont: {
+                            size: 15,
+                            weight: "bold"
+                        },
+
+                        bodyFont: {
+                            size: 14
+                        },
+
+                        padding: 12,
+
+                        callbacks: {
+
+                            label: function(context) {
+
+                                return ` Incidents: ${context.raw}`;
+
+                            }
+
+                        }
+
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+
+                        title: {
+
+                            display: true,
+
+                            text: "Date",
+
+                            color: "#ffffff",
+
+                            font: {
+                                size: 15,
+                                weight: "bold"
+                            }
+
+                        },
+
+                        ticks: {
+
+                            color: "#ffffff",
+
+                            font: {
+                                size: 16,
+                                weight: "bold"
+                            },
+
+                            autoSkip: false,
+
+                            maxRotation: 45,
+
+                            minRotation: 0
+
+                        }
+
+                    },
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        title: {
+
+                            display: true,
+
+                            text: "Number of Incidents",
+
+                            color: "#ffffff",
+
+                            font: {
+                                size: 15,
+                                weight: "bold"
+                            }
+
+                        },
+
+                        ticks: {
+
+                            color: "#ffffff",
+
+                            font: {
+                                size: 16,
+                                weight: "bold"
+                            },
+
+                            stepSize: 1
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    })
+
+    .catch(error => {
+
+        console.error(
+            "Incident Trends error:",
+            error
+        );
+
+    });
+
+
+/*
+ * ============================================================
+ * SEARCH TABLE
+ * ============================================================
+ */
+
 function searchTable() {
 
-    let input = document.getElementById("searchInput");
-    let filter = input.value.toUpperCase();
+    let input =
+        document.getElementById("searchInput");
 
-    let table = document.querySelector("table");
-    let tr = table.getElementsByTagName("tr");
+    let filter =
+        input.value.toUpperCase();
+
+    let table =
+        document.querySelector("table");
+
+    let tr =
+        table.getElementsByTagName("tr");
 
     for (let i = 1; i < tr.length; i++) {
 
-        let rowText = tr[i].textContent || tr[i].innerText;
+        let rowText =
+            tr[i].textContent ||
+            tr[i].innerText;
 
-        if (rowText.toUpperCase().indexOf(filter) > -1) {
+        if (
+            rowText
+                .toUpperCase()
+                .indexOf(filter) > -1
+        ) {
+
             tr[i].style.display = "";
+
         } else {
+
             tr[i].style.display = "none";
+
         }
+
     }
+
 }
 
-</script>
 
+/*
+ * ============================================================
+ * 3. ATTACK STATISTICS
+ * ============================================================
+ */
+
+fetch("/api/attack-statistics")
+
+    .then(response => response.json())
+
+    .then(result => {
+
+        const attackCtx =
+            document.getElementById("attackStatisticsChart");
+
+        new Chart(attackCtx, {
+
+            type: "bar",
+
+            data: {
+
+                labels: result.labels,
+
+                datasets: [{
+
+                    label: "Detected Attacks",
+
+                    data: result.data,
+
+                    borderWidth: 2,
+
+                    borderRadius: 6,
+
+                    hoverBorderWidth: 3
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                interaction: {
+                    intersect: false,
+                    mode: "index"
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        position: "top",
+
+                        labels: {
+
+                            color: "#ffffff",
+
+                            padding: 20,
+
+                            font: {
+                                size: 15,
+                                weight: "bold"
+                            }
+
+                        }
+
+                    },
+
+                    tooltip: {
+
+                        titleFont: {
+                            size: 15,
+                            weight: "bold"
+                        },
+
+                        bodyFont: {
+                            size: 14
+                        },
+
+                        padding: 12,
+
+                        callbacks: {
+
+                            label: function(context) {
+
+                                return ` Detected: ${context.raw}`;
+
+                            }
+
+                        }
+
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+
+                        title: {
+
+                            display: true,
+
+                            text: "Attack Type",
+
+                            color: "#ffffff",
+
+                            font: {
+                                size: 15,
+                                weight: "bold"
+                            }
+
+                        },
+
+                        ticks: {
+
+                            color: "#ffffff",
+
+                            font: {
+                                size: 16,
+                                weight: "bold"
+                            },
+
+                            autoSkip: false,
+
+                            maxRotation: 45,
+
+                            minRotation: 0
+
+                        }
+
+                    },
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        title: {
+
+                            display: true,
+
+                            text: "Number of Attacks",
+
+                            color: "#ffffff",
+
+                            font: {
+                                size: 15,
+                                weight: "bold"
+                            }
+
+                        },
+
+                        ticks: {
+
+                            color: "#ffffff",
+
+                            font: {
+                                size: 16,
+                                weight: "bold"
+                            },
+
+                            stepSize: 1
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    })
+
+    .catch(error => {
+
+        console.error(
+            "Attack Statistics error:",
+            error
+        );
+
+    });
+
+</script>
 
 <script src="/static/dashboard.js"></script>
 

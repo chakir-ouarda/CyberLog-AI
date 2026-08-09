@@ -1,4 +1,4 @@
-let previousTotal = null;
+let previousIncidentIds = null;
 
 async function updateDashboard() {
 
@@ -23,16 +23,22 @@ async function updateDashboard() {
             i => i.severity === "MEDIUM"
         ).length;
 
+        const low = data.filter(
+            i => i.severity === "LOW"
+        ).length;
+
 
         let avgRisk = 0;
 
         if (total > 0) {
+
             avgRisk = Math.round(
                 data.reduce(
-                    (sum, i) => sum + i.risk_score,
+                    (sum, i) => sum + Number(i.risk_score || 0),
                     0
                 ) / total
             );
+
         }
 
 
@@ -43,26 +49,68 @@ async function updateDashboard() {
         document.getElementById("avgRisk").textContent = avgRisk;
 
 
-        if (previousTotal !== null && total > previousTotal) {
+        /*
+         * Real-Time SOC Alert
+         */
 
-            const alertBox = document.getElementById("liveAlert");
+        const currentIds = data.map(
+            incident => incident.id
+        );
 
-            if (alertBox) {
+        if (previousIncidentIds !== null) {
 
-                alertBox.style.display = "block";
+            const newIncidents = data.filter(
+                incident =>
+                    !previousIncidentIds.includes(incident.id)
+            );
 
-                setTimeout(() => {
-                    alertBox.style.display = "none";
-                }, 5000);
+
+            const criticalIncidents = newIncidents.filter(
+                incident => incident.severity === "CRITICAL"
+            );
+
+            if (criticalIncidents.length > 0) {
+
+                const incident = criticalIncidents[0];
+
+                const alertBox =
+                    document.getElementById("liveAlert");
+
+
+                if (alertBox) {
+
+                    alertBox.innerHTML = `
+                        🚨 <strong>CRITICAL SECURITY ALERT</strong>
+                        <br>
+                        Incident: ${incident.incident}
+                        <br>
+                        Severity: ${incident.severity}
+                        <br>
+                        Source IP: ${incident.source_ip || "Unknown"}
+                        <br>
+                        Risk Score: ${incident.risk_score}
+                    `;
+
+                    alertBox.style.display = "block";
+
+
+                    setTimeout(() => {
+
+                        alertBox.style.display = "none";
+
+                    }, 8000);
+
+                }
 
             }
+
         }
 
 
-        previousTotal = total;
+        previousIncidentIds = currentIds;
 
 
-    } catch(error) {
+    } catch (error) {
 
         console.error(
             "Dashboard update error:",

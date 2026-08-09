@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Incident Details</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+
+<header class="soc-header">
+
+    <div>
+
+        <h1>🛡️ CyberLog AI</h1>
+
+        <p>Incident Investigation</p>
+
+    </div>
+
+</header>
+
+<div class="container">
+
+    <h2>{{ incident.incident }}</h2>
+
+    <hr>
+
+    <p><strong>Source IP:</strong> {{ incident.source_ip }}</p>
+
+    <p><strong>Severity:</strong> {{ incident.severity }}</p>
+
+    <p><strong>Risk Score:</strong> {{ incident.risk_score }}</p>
+
+    <form method="POST">
+
+    <p>
+
+        <strong>Status:</strong>
+
+        <select name="status">
+
+            <option value="NEW"
+            {% if incident.status == "NEW" %}selected{% endif %}>
+                NEW
+            </option>
+
+            <option value="INVESTIGATING"
+            {% if incident.status == "INVESTIGATING" %}selected{% endif %}>
+                INVESTIGATING
+            </option>
+
+            <option value="RESOLVED"
+            {% if incident.status == "RESOLVED" %}selected{% endif %}>
+                RESOLVED
+            </option>
+
+        </select>
+
+    </p>
+
+    <p>
+
+        <strong>Assigned To:</strong>
+
+        <input
+            type="text"
+            name="assigned_to"
+            value="{{ incident.assigned_to or '' }}"
+        >
+
+    <p>
+
+    <p>
+    <strong>Investigation Notes:</strong>
+    </p>
+    <textarea
+        name="investigation_notes"
+        rows="8"
+        style="width:100%;"
+    >{{ incident.investigation_notes or "" }}</textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Save Changes
+    </button>
+
+    </form>
+
+    <p><strong>Analysis</strong></p>
+
+    <p>{{ incident.analysis }}</p>
+
+    <h3>Recommendations</h3>
+
+    <ul>
+
+    {% for recommendation in incident.recommendations %}
+
+        <li>{{ recommendation }}</li>
+
+    {% endfor %}
+
+    </ul>
+
+    <h3>MITRE ATT&CK</h3>
+
+    <p>
+
+        Technique ID:
+        {{ incident.mitre.technique_id }}
+
+        <br>
+
+        Technique:
+        {{ incident.mitre.technique }}
+
+        <br>
+
+        Tactic:
+        {{ incident.mitre.tactic }}
+
+    </p>
+
+    <hr>
+
+    <h3>🕒 Investigation History</h3>
+
+    {% if audit_logs %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Analyst</th>
+                    <th>Action</th>
+                    <th>Status Change</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for log in audit_logs %}
+
+                <tr>
+                    <td>{{ log.created_at }}</td>
+                    <td>{{ log.username }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>
+                        {{ log.old_status }} → {{ log.new_status }}
+                    </td>
+                    <td>{{ log.details }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% else %}
+
+        <p>No investigation history available.</p>
+
+    {% endif %}
+
+    <br>
+
+    <a href="/">
+        ⬅️ Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+
+</html>
